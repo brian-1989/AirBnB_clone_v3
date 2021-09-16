@@ -54,16 +54,13 @@ class DBStorage:
     def get(self, cls, id):
         """ this method is to retrieve one object """
         for value in self.all(cls).values():
-            if value.get('id') == id:
+            if value.id == id:
                 return value
         return None
 
     def count(self, cls=None):
         """ this method is to count the number of object in storage """
-        if self.all():
-            return len(self.all())
-        else:
-            return len(self.all(cls))
+        return len(self.all(cls))
 
     def new(self, obj):
         """add the object to the current database session"""
