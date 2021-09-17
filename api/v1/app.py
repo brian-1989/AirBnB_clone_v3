@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 """ Module that represents the main application """
 
-from threading import Thread
-from flask import Flask
+from flask import Flask, jsonify
 from models import storage
-from api.v1.views import app_views
 from os import getenv
+from api.v1.views import app_views
 
 HOST = getenv('HBNB_API_HOST')
 PORT = getenv('HBNB_API_PORT')
@@ -19,6 +18,12 @@ def reset_session(exception):
     """ This function use the handler teardown_appcontext to
         close or otherwise deallocates the resource if it exists """
     storage.close()
+
+
+@app.errorhandler(404)
+def show_error(error):
+    """ This function is a handler for 404 errors """
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == "__main__":
