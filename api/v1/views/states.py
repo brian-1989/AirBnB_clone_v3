@@ -24,7 +24,7 @@ def all_states(state_id=None):
             for state in _states:
                 if state.id == state_id:
                     list_states.append(state.to_dict())
-                    return jsonify(list_states)
+                    return jsonify(list_states[0])
             abort(404)
     if request.method == 'DELETE':
         obj_state = storage.get(State, state_id)
