@@ -45,14 +45,16 @@ def all_states(state_id=None):
         except Exception:
             abort(400, description="Not a JSON")
     if request.method == 'PUT':
-        conv_body = request.get_json()
         new_inst = storage.get(State, state_id)
         if not new_inst:
             abort(404)
         try:
+            list_ignore = ['id', 'created_at', 'updated_at']
+            conv_body = request.get_json()
             for key, value in conv_body.items():
-                setattr(new_inst, key, value)
+                if key not in list_ignore:
+                    setattr(new_inst, key, value)
             new_inst.save()
-            return jsonify(new_inst.to_dict())
+            return jsonify(new_inst.to_dict()), 200
         except Exception:
             abort(400, description="Not a JSON")
