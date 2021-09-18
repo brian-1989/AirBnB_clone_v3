@@ -15,12 +15,12 @@ def all_states(state_id=None):
     if request.method == 'GET':
         _states = storage.all(State).values()
         if state_id is None:
-            list_states = []
+            list_states = list()
             for state in _states:
                 list_states.append(state.to_dict())
             return jsonify(list_states)
         else:
-            list_states = []
+            list_states = list()
             for state in _states:
                 if state.id == state_id:
                     list_states.append(state.to_dict())
@@ -31,18 +31,18 @@ def all_states(state_id=None):
         if obj_state:
             storage.delete(obj_state)
             storage.save()
-            return jsonify({}), 200
+            return jsonify(dict()), 200
         abort(404)
     if request.method == 'POST':
-        conv_body = request.get_json()
-        if 'name' not in conv_body:
-            abort(400, description="Missing name")
         try:
+            conv_body = request.get_json()
+            if 'name' not in conv_body:
+                return "Missing name\n", 404
             new_inst = State(name=conv_body.get('name'))
             storage.new(new_inst)
             storage.save()
             return jsonify(new_inst.to_dict()), 201
-        except Exception:
+        except:
             abort(400, description="Not a JSON")
     if request.method == 'PUT':
         new_inst = storage.get(State, state_id)
@@ -56,5 +56,5 @@ def all_states(state_id=None):
                     setattr(new_inst, key, value)
             new_inst.save()
             return jsonify(new_inst.to_dict()), 200
-        except Exception:
+        except:
             abort(400, description="Not a JSON")
