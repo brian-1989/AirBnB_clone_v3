@@ -43,7 +43,7 @@ def all_states(state_id=None):
             storage.save()
             return jsonify(new_inst.to_dict()), 201
         except Exception:
-            abort(400, description="Not a JSON")
+            return "Not a JSON\n", 400
     if request.method == 'PUT':
         new_inst = storage.get(State, state_id)
         if not new_inst:
@@ -57,4 +57,4 @@ def all_states(state_id=None):
             new_inst.save()
             return jsonify(new_inst.to_dict()), 200
         except Exception:
-            abort(400, description="Not a JSON")
+            return "Not a JSON\n", 400
