@@ -19,7 +19,7 @@ def all_city_of_state(state_id=None):
             list_cities = list()
             for city in _states.cities:
                 list_cities.append(city.to_dict())
-            return jsonify(list_cities[0])
+            return jsonify(list_cities)
         abort(404)
     if request.method == 'POST':
         _states = storage.get(State, state_id)
