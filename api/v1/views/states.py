@@ -38,7 +38,7 @@ def all_states(state_id=None):
         if 'name' not in conv_body:
             abort(400, description="Missing name")
         try:
-            new_inst = State(name=conv_body.get('name'))
+            new_inst = State(name=conv_body['name'])
             storage.new(new_inst)
             storage.save()
             return jsonify(new_inst.to_dict()), 201
