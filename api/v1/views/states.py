@@ -46,14 +46,13 @@ def all_states(state_id=None):
             abort(400, description="Not a JSON")
     if request.method == 'PUT':
         conv_body = request.get_json()
+        new_inst = storage.get(State, state_id)
+        if not new_inst:
+            abort(404)
         try:
-            new_inst = storage.get(State, state_id)
-            if new_inst is not None:
-                for key, value in conv_body.items():
-                    setattr(new_inst, key, value)
-                new_inst.save()
-                return jsonify(new_inst.to_dict())
-            else:
-                abort(404)
+            for key, value in conv_body.items():
+                setattr(new_inst, key, value)
+            new_inst.save()
+            return jsonify(new_inst.to_dict())
         except Exception:
             abort(400, description="Not a JSON")
