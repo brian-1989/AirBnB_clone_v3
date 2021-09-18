@@ -37,7 +37,7 @@ def all_states(state_id=None):
         try:
             conv_body = request.get_json()
             if 'name' not in conv_body:
-                return "Missing name\n", 404
+                return "Missing name\n", 400
             new_inst = State(name=conv_body.get('name'))
             storage.new(new_inst)
             storage.save()
@@ -45,20 +45,16 @@ def all_states(state_id=None):
         except:
             abort(400, description="Not a JSON")
     if request.method == 'PUT':
-        states = storage.all(State)
-        for obj in states.values():
-            if state_id == obj.id:
-                if not request.json:
-                    abort(400, "Not a JSON")
-                content = request.get_json()
-
-                for key, value in content.items():
-                    if key == 'id':
-                        continue
-                    if key == 'updated_at' or key == 'created_at':
-                        continue
-                    else:
-                        setattr(obj, key, value)
-                obj.save()
-                return jsonify(obj.to_dict()), 200
-        abort(404)
+        new_inst = storage.get(State, state_id)
+        if not new_inst:
+            abort(404)
+        try:
+            list_ignore = ['id', 'created_at', 'updated_at']
+            conv_body = request.get_json()
+            for key, value in conv_body.items():
+                if key not in list_ignore:
+                    setattr(new_inst, key, value)
+            new_inst.save()
+            return jsonify(new_inst.to_dict()), 200
+        except:
+            abort(400, description="Not a JSON")
