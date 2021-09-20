@@ -2,17 +2,15 @@
 """ Module that represents the main application """
 
 from flask import Flask, jsonify
-from flask_cors import CORS
+# from flask_cors import CORS
 from models import storage
 from os import getenv
 from api.v1.views import app_views
 
-HOST = getenv('HBNB_API_HOST')
-PORT = getenv('HBNB_API_PORT')
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
-cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+# cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 
 @app.teardown_appcontext
@@ -29,6 +27,8 @@ def show_error(error):
 
 
 if __name__ == "__main__":
+    HOST = getenv('HBNB_API_HOST')
+    PORT = getenv('HBNB_API_PORT')
     if HOST:
         _host = HOST
     else:
