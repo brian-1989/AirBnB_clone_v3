@@ -2,7 +2,8 @@
 """ Module that represents the main application """
 
 from flask import Flask, jsonify
-# from flask_cors import CORS
+from flask.helpers import make_response
+from flask_cors import CORS
 from models import storage
 from os import getenv
 from api.v1.views import app_views
@@ -10,7 +11,7 @@ from api.v1.views import app_views
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
-# cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 
 @app.teardown_appcontext
@@ -23,7 +24,7 @@ def reset_session(exception):
 @app.errorhandler(404)
 def show_error(error):
     """ This function is a handler for 404 errors """
-    return jsonify({"error": "Not found"}), 404
+    return make_response(jsonify({"error": "Not found"}), 404)
 
 
 if __name__ == "__main__":
