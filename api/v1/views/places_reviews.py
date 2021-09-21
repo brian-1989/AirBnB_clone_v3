@@ -35,8 +35,8 @@ def all_reviews_of_place(place_id=None):
         _user = storage.get(User, conv_body.get('user_id'))
         if _user is None:
             abort(404)
-        if 'name' not in conv_body:
-            return "Missing name\n", 400
+        if 'text' not in conv_body:
+            return "Missing text\n", 400
         conv_body['place_id'] = _places.id
         new_inst = Review(**conv_body)
         storage.new(new_inst)
