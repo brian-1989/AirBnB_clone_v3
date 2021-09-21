@@ -7,7 +7,6 @@ from models import storage
 from models.place import Place
 from models.review import Review
 from models.user import User
-from api.v1.app import show_error
 
 
 @app_views.route("/places/<place_id>/reviews", methods=['GET', 'POST'],
