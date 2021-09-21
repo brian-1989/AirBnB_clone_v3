@@ -27,23 +27,21 @@ def all_reviews_of_place(place_id=None):
         _places = storage.get(Place, place_id)
         if _places is None:
             abort(404)
-        try:
-            conv_body = request.get_json()
-            if 'user_id' not in conv_body:
-                return "Missing user_id\n", 400
-            _user = storage.get(User, conv_body.get('user_id'))
-            if _user is None:
-                return show_error(404)
-            if 'text' not in conv_body:
-                return "Missing text\n", 400
-            new_inst = Review(text=conv_body.get(
-                'text'), user_id=conv_body.get(
-                    'user_id'), place_id=_places.id)
-            storage.new(new_inst)
-            storage.save()
-            return jsonify(new_inst.to_dict()), 201
-        except:
+        conv_body = request.get_json()
+        if not conv_body:
             abort(400, description="Not a JSON")
+        if 'user_id' not in conv_body:
+            return "Missing user_id\n", 400
+        _user = storage.get(User, conv_body.get('user_id'))
+        if _user is None:
+            abort(404)
+        if 'name' not in conv_body:
+            return "Missing name\n", 400
+        conv_body['place_id'] = _places.id
+        new_inst = Review(**conv_body)
+        storage.new(new_inst)
+        storage.save()
+        return jsonify(new_inst.to_dict()), 201
 
 
 @app_views.route("/reviews/<review_id>", methods=['GET', 'DELETE', 'PUT'],
