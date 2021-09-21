@@ -28,15 +28,16 @@ def all_places_of_city(city_id=None):
             abort(404)
         conv_body = request.get_json()
         if not conv_body:
-            abort(404, description="Not a JSON")
+            abort(400, description="Not a JSON")
         if 'user_id' not in conv_body:
-                return "Missing user_id\n", 400
+            return "Missing user_id\n", 400
         _user = storage.get(User, conv_body.get('user_id'))
         if _user is None:
-                abort(404)
+            abort(404)
         if 'name' not in conv_body:
             return "Missing name\n", 400
-        new_inst = Place(**conv_body, city_id=_cities.id)
+        conv_body['city_id'] = city_id
+        new_inst = Place(**conv_body)
         storage.new(new_inst)
         storage.save()
         return jsonify(new_inst.to_dict()), 201
