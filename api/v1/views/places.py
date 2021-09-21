@@ -7,7 +7,6 @@ from models import storage
 from models.city import City
 from models.place import Place
 from models.user import User
-from api.v1.app import show_error
 
 
 @app_views.route("/cities/<city_id>/places", methods=['GET', 'POST'],
@@ -27,22 +26,20 @@ def all_places_of_city(city_id=None):
         _cities = storage.get(City, city_id)
         if _cities is None:
             abort(404)
-        try:
-            conv_body = request.get_json()
-            if 'user_id' not in conv_body:
+        conv_body = request.get_json()
+        if not conv_body:
+            abort(404, description="Not a JSON")
+        if 'user_id' not in conv_body:
                 return "Missing user_id\n", 400
-            _user = storage.get(User, conv_body.get('user_id'))
-            if _user is None:
-                return show_error(404)
-            if 'name' not in conv_body:
-                return "Missing name\n", 400
-            new_inst = Place(name=conv_body.get('name'), user_id=conv_body.get(
-                'user_id'), city_id=_cities.id)
-            storage.new(new_inst)
-            storage.save()
-            return jsonify(new_inst.to_dict()), 201
-        except:
-            abort(400, description="Not a JSON")
+        _user = storage.get(User, conv_body.get('user_id'))
+        if _user is None:
+                abort(404)
+        if 'name' not in conv_body:
+            return "Missing name\n", 400
+        new_inst = Place(**conv_body, city_id=_cities.id)
+        storage.new(new_inst)
+        storage.save()
+        return jsonify(new_inst.to_dict()), 201
 
 
 @app_views.route("/places/<place_id>", methods=['GET', 'DELETE', 'PUT'],
