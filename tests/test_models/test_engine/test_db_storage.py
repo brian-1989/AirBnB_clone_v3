@@ -92,7 +92,7 @@ class TestFileStorage(unittest.TestCase):
         """Test to method get"""
         new_inst = State(name='Illinois')
         _id = new_inst.id
-        new_inst.new(new_inst)
+        # new_inst.new(new_inst)
         new_inst.save()
         self.assertEqual(storage.get(State, _id), new_inst)
 
@@ -100,7 +100,7 @@ class TestFileStorage(unittest.TestCase):
     def test_count(self):
         """Test to method count"""
         new_inst = State(name='Illinois')
-        new_inst.new(new_inst)
+        # new_inst.new(new_inst)
         new_inst.save()
         all_objects = len(storage.all(State))
         self.assertEqual(all_objects, storage.count(State))
